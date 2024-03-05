@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,13 +22,8 @@ public class AuthorController {
     }
 
     @GetMapping("author")
-    public ResponseEntity<List<Author>> getAllAuthors() {
-        List<Author> authors = new ArrayList<>();
-        authors.add(new Author(1, "Abay", "Kunanbay"));
-        authors.add(new Author(2, "Mirzhakip", "Dulatov"));
-        authors.add(new Author(3, "Mukhtar", "Auezov"));
-
-        return ResponseEntity.ok(authors);
+    public ResponseEntity<List<AuthorDto>> getAllAuthors() {
+        return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
     }
 
     @GetMapping("author/{id}")

@@ -7,6 +7,9 @@ import com.library.api.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private AuthorRepository authorRepository;
@@ -30,5 +33,29 @@ public class AuthorServiceImpl implements AuthorService {
         authorResponse.setSurname(newAuthor.getSurname());
 
         return authorResponse;
+    }
+
+    @Override
+    public List<AuthorDto> getAllAuthors() {
+        List<Author> authors = authorRepository.findAll();
+    //map because it returns a new list
+        return authors.stream().map(auth -> mapToDto(auth)).collect(Collectors.toList());
+    }
+
+
+    // Mapper
+    private AuthorDto mapToDto(Author author) {
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setId(author.getId());
+        authorDto.setName(author.getName());
+        authorDto.setSurname(author.getSurname());
+        return authorDto;
+    }
+
+    private Author mapToEntity(AuthorDto authorDto) {
+        Author author = new Author();
+        author.setName(authorDto.getName());
+        author.setSurname(authorDto.getSurname());
+        return author;
     }
 }
