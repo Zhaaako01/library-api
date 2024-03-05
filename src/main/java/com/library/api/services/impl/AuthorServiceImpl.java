@@ -1,10 +1,15 @@
 package com.library.api.services.impl;
 
 import com.library.api.dto.AuthorDto;
+import com.library.api.dto.AuthorResponse;
+import com.library.api.exceptions.AuthorNotFoundException;
 import com.library.api.models.Author;
 import com.library.api.repository.AuthorRepository;
 import com.library.api.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,10 +41,44 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorDto> getAllAuthors() {
-        List<Author> authors = authorRepository.findAll();
-    //map because it returns a new list
-        return authors.stream().map(auth -> mapToDto(auth)).collect(Collectors.toList());
+    public AuthorResponse getAllAuthors(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Author> authors = authorRepository.findAll(pageable);
+        List<Author> listOfAuthors = authors.getContent();
+
+                                                         //map because it returns a new list
+        List<AuthorDto> content = listOfAuthors.stream().map(auth -> mapToDto(auth)).collect(Collectors.toList());
+        AuthorResponse authorResponse = new AuthorResponse();
+        authorResponse.setContent(content);
+        authorResponse.setPageNo(authors.getNumber());
+        authorResponse.setPageSize(authors.getSize());
+        authorResponse.setTotalElements(authors.getTotalElements());
+        authorResponse.setTotalPages(authors.getTotalPages());
+        authorResponse.setLast(authors.isLast());
+
+        return authorResponse;
+    }
+
+    @Override
+    public AuthorDto getAuthorById(int id) {
+        Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author could not be found"));
+        return mapToDto(author);
+
+    }
+
+    @Override
+    public AuthorDto updateAuthor(AuthorDto authorDto, int id) {
+        Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author could not be updated"));
+        author.setName(authorDto.getName());
+        author.setSurname(authorDto.getSurname());
+        Author updatedAuthor = authorRepository.save(author);
+        return mapToDto(updatedAuthor);
+    }
+
+    @Override
+    public void deleteAuthorById(int id) {
+        Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author could not be deleted"));
+        authorRepository.delete(author);
     }
 
 
