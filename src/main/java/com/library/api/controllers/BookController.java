@@ -2,6 +2,7 @@ package com.library.api.controllers;
 
 import com.library.api.dto.BookDto;
 import com.library.api.services.BookService;
+import com.library.api.services.WebSocketNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,21 @@ import java.util.List;
 @RequestMapping("/api/")
 public class BookController {
     private BookService bookService;
+    private WebSocketNotificationService webSocketNotificationService;
+
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, WebSocketNotificationService webSocketNotificationService) {
         this.bookService = bookService;
+        this.webSocketNotificationService = webSocketNotificationService;
     }
 
     @PostMapping("/author/{authorId}/book")
     public ResponseEntity<BookDto> createBook(@PathVariable(value = "authorId") int authorId,
                                               @RequestBody BookDto bookDto) {
-        return new ResponseEntity<>(bookService.createBook(authorId, bookDto), HttpStatus.CREATED);
+        BookDto createdBookDto = bookService.createBook(authorId, bookDto);
+        webSocketNotificationService.notify("Book created with ID: " + createdBookDto.getId(), "/topic/book/notifications");
+        return new ResponseEntity<>(createdBookDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/author/{authorId}/books")
