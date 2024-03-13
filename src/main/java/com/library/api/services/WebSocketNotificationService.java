@@ -1,6 +1,8 @@
 package com.library.api.services;
 
+import com.library.api.dto.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ public class WebSocketNotificationService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void notify(String message, String destination){
-        messagingTemplate.convertAndSend(destination, message);
+    public void notify(@Payload BookDto bookDto, String destination){
+        messagingTemplate.convertAndSend(destination, bookDto);
     }
 }

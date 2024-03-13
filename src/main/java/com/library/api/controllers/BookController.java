@@ -27,7 +27,7 @@ public class BookController {
     public ResponseEntity<BookDto> createBook(@PathVariable(value = "authorId") int authorId,
                                               @RequestBody BookDto bookDto) {
         BookDto createdBookDto = bookService.createBook(authorId, bookDto);
-        webSocketNotificationService.notify("Book created with ID: " + createdBookDto.getId(), "/topic/book/notifications");
+        webSocketNotificationService.notify(createdBookDto, "/topic/book/notifications");
         return new ResponseEntity<>(createdBookDto, HttpStatus.CREATED);
     }
 
