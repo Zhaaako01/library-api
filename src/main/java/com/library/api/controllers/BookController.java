@@ -6,9 +6,11 @@ import com.library.api.services.WebSocketNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/")
@@ -48,6 +50,7 @@ public class BookController {
                                               @PathVariable(value = "id") int bookId,
                                               @RequestBody BookDto bookDto) {
         BookDto updatedBook = bookService.updateBook(authorId, bookId, bookDto);
+        webSocketNotificationService.notify(updatedBook, "/topic/book/notifications");
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
@@ -55,6 +58,8 @@ public class BookController {
     public ResponseEntity<String> deleteBook(@PathVariable(value = "authorId") int authorId,
                                              @PathVariable(value = "id") int bookId) {
         bookService.deleteBook(authorId, bookId);
-        return new ResponseEntity<>("Book deleted succesfully", HttpStatus.OK);
+        return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
     }
+
+
 }

@@ -14,4 +14,15 @@ public interface BookService {
     BookDto updateBook(int authorId, int bookId, BookDto bookDto);
 
     void deleteBook(int authorId, int bookId);
+
+    BookDto createBookWS(BookDto bookDto);
+
+    BookDto updateBookWS(BookDto bookDto);
+
+
+    // Работает в Postman, но не в jxy.me
+//    void deleteBookWS(int bookId);
+
+
+    void deleteBookWS(BookDto bookDto);
 }

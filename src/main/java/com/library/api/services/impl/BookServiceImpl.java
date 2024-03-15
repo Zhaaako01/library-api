@@ -37,6 +37,8 @@ public class BookServiceImpl implements BookService {
         return mapToDto(newBook);
     }
 
+
+
     @Override
     public List<BookDto> getBookByAuthorId(int id) {
         List<Book> books = bookRepository.findByAuthorId(id);
@@ -84,6 +86,7 @@ public class BookServiceImpl implements BookService {
         return mapToDto(updatedBook);
     }
 
+
     @Override
     public void deleteBook(int authorId, int bookId) {
         Author author = authorRepository.findById(authorId).orElseThrow(() ->
@@ -115,4 +118,44 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+
+
+    // --------- WEBSOCKET ---------
+
+    @Override
+    public BookDto createBookWS(BookDto bookDto) {
+        Book book = mapToEntity(bookDto);
+        Book newBook = bookRepository.save(book);
+        return mapToDto(newBook);
+    }
+
+    // Работает в jxy.me но не в Postman
+    @Override
+    public void deleteBookWS(BookDto bookDto){
+        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
+                new BookNotFoundException("Book with associated author not found"));
+        bookRepository.delete(book);
+    }
+
+    // Работает в Postman, но не в jxy.me
+//    @Override
+//    public void deleteBookWS(int bookId){
+//        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+//                new BookNotFoundException("Book with associated author not found"));
+//        bookRepository.delete(book);
+//    }
+
+    @Override
+    public BookDto updateBookWS(BookDto bookDto) {
+
+        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
+                new BookNotFoundException("Book with associated author not found"));
+
+        book.setTitle(bookDto.getTitle());
+        book.setPages(bookDto.getPages());
+
+        Book updatedBook = bookRepository.save(book);
+
+        return mapToDto(updatedBook);
+    }
 }
