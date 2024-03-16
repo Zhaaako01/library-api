@@ -2,7 +2,6 @@ package com.library.api.controllers;
 
 import com.library.api.dto.AuthorDto;
 import com.library.api.dto.AuthorResponse;
-import com.library.api.models.Author;
 import com.library.api.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

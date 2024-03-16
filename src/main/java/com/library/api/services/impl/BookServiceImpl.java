@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,16 +28,29 @@ public class BookServiceImpl implements BookService {
         this.authorRepository = authorRepository;
     }
 
+//    @Override
+//    public BookDto createBook(int authorId, BookDto bookDto) {
+//        Book book = mapToEntity(bookDto);
+//        Author author = authorRepository.findById(authorId).orElseThrow(() ->
+//                new AuthorNotFoundException("Author with associated book not found"));
+//        book.setAuthor(author);
+//        Book newBook = bookRepository.save(book);
+//        return mapToDto(newBook);
+//    }
+
     @Override
-    public BookDto createBook(int authorId, BookDto bookDto) {
+    public BookDto createBook(BookDto bookDto) {
         Book book = mapToEntity(bookDto);
-        Author author = authorRepository.findById(authorId).orElseThrow(() ->
+
+        Author author = authorRepository.findById(bookDto.getAuthor_id().orElseThrow()).orElseThrow(() ->
                 new AuthorNotFoundException("Author with associated book not found"));
         book.setAuthor(author);
+
+//        int i = Integer.valueOf(String.valueOf(bookDto.getAuthor_id()));
+//        book.getAuthor().setId(i);
         Book newBook = bookRepository.save(book);
         return mapToDto(newBook);
     }
-
 
 
     @Override
@@ -65,18 +79,33 @@ public class BookServiceImpl implements BookService {
         return mapToDto(book);
     }
 
+//    @Override
+//    public BookDto updateBook(int authorId, int bookId, BookDto bookDto) {
+//
+//        Author author = authorRepository.findById(authorId).orElseThrow(() ->
+//                new AuthorNotFoundException("Author with associated book not found"));
+//
+//        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+//                new BookNotFoundException("Book with associated author not found"));
+//
+//        if (book.getAuthor().getId() != author.getId()) {
+//            throw new BookNotFoundException("This book does not belong to a author");
+//        }
+//
+//        book.setTitle(bookDto.getTitle());
+//        book.setPages(bookDto.getPages());
+//
+//        Book updatedBook = bookRepository.save(book);
+//
+//        return mapToDto(updatedBook);
+//    }
+
+
     @Override
-    public BookDto updateBook(int authorId, int bookId, BookDto bookDto) {
+    public BookDto updateBook(BookDto bookDto) {
 
-        Author author = authorRepository.findById(authorId).orElseThrow(() ->
-                new AuthorNotFoundException("Author with associated book not found"));
-
-        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
                 new BookNotFoundException("Book with associated author not found"));
-
-        if (book.getAuthor().getId() != author.getId()) {
-            throw new BookNotFoundException("This book does not belong to a author");
-        }
 
         book.setTitle(bookDto.getTitle());
         book.setPages(bookDto.getPages());
@@ -87,18 +116,25 @@ public class BookServiceImpl implements BookService {
     }
 
 
+//    @Override
+//    public void deleteBook(int authorId, int bookId) {
+//        Author author = authorRepository.findById(authorId).orElseThrow(() ->
+//                new AuthorNotFoundException("Author with associated book not found"));
+//
+//        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+//                new BookNotFoundException("Book with associated author not found"));
+//
+//        if (book.getAuthor().getId() != author.getId()) {
+//            throw new BookNotFoundException("This book does not belong to a author");
+//        }
+//
+//        bookRepository.delete(book);
+//    }
+
     @Override
-    public void deleteBook(int authorId, int bookId) {
-        Author author = authorRepository.findById(authorId).orElseThrow(() ->
-                new AuthorNotFoundException("Author with associated book not found"));
-
-        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+    public void deleteBook(BookDto bookDto){
+        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
                 new BookNotFoundException("Book with associated author not found"));
-
-        if (book.getAuthor().getId() != author.getId()) {
-            throw new BookNotFoundException("This book does not belong to a author");
-        }
-
         bookRepository.delete(book);
     }
 
@@ -107,6 +143,8 @@ public class BookServiceImpl implements BookService {
         bookDto.setId(book.getId());
         bookDto.setTitle(book.getTitle());
         bookDto.setPages(book.getPages());
+        bookDto.setAuthor_id(Optional.of(book.getAuthor().getId()));
+//        bookDto.setAuthor_id(Optional.of(book.getAuthor().getId()));
         return bookDto;
     }
 
@@ -115,47 +153,9 @@ public class BookServiceImpl implements BookService {
         book.setId(bookDto.getId());
         book.setTitle(bookDto.getTitle());
         book.setPages(bookDto.getPages());
+//        int i = Integer.valueOf(String.valueOf(bookDto.getAuthor_id()));
+//        int i = bookDto.getAuthor_id().orElseThrow();
+//        book.getAuthor().setId(i);
         return book;
-    }
-
-
-
-    // --------- WEBSOCKET ---------
-
-    @Override
-    public BookDto createBookWS(BookDto bookDto) {
-        Book book = mapToEntity(bookDto);
-        Book newBook = bookRepository.save(book);
-        return mapToDto(newBook);
-    }
-
-    // Работает в jxy.me но не в Postman
-    @Override
-    public void deleteBookWS(BookDto bookDto){
-        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
-                new BookNotFoundException("Book with associated author not found"));
-        bookRepository.delete(book);
-    }
-
-    // Работает в Postman, но не в jxy.me
-//    @Override
-//    public void deleteBookWS(int bookId){
-//        Book book = bookRepository.findById(bookId).orElseThrow(() ->
-//                new BookNotFoundException("Book with associated author not found"));
-//        bookRepository.delete(book);
-//    }
-
-    @Override
-    public BookDto updateBookWS(BookDto bookDto) {
-
-        Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
-                new BookNotFoundException("Book with associated author not found"));
-
-        book.setTitle(bookDto.getTitle());
-        book.setPages(bookDto.getPages());
-
-        Book updatedBook = bookRepository.save(book);
-
-        return mapToDto(updatedBook);
     }
 }

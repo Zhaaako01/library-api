@@ -5,24 +5,19 @@ import com.library.api.dto.BookDto;
 import java.util.List;
 
 public interface BookService {
-    BookDto createBook(int authorId, BookDto bookDto);
+//    BookDto createBook(int authorId, BookDto bookDto);
+
+    BookDto createBook(BookDto bookDto);
 
     List<BookDto> getBookByAuthorId(int id);
 
     BookDto getBookById(int authorId, int bookId);
 
-    BookDto updateBook(int authorId, int bookId, BookDto bookDto);
+    BookDto updateBook(BookDto bookDto);
 
-    void deleteBook(int authorId, int bookId);
+//    BookDto updateBook(int authorId, int bookId, BookDto bookDto);
 
-    BookDto createBookWS(BookDto bookDto);
+//    void deleteBook(int authorId, int bookId);
 
-    BookDto updateBookWS(BookDto bookDto);
-
-
-    // Работает в Postman, но не в jxy.me
-//    void deleteBookWS(int bookId);
-
-
-    void deleteBookWS(BookDto bookDto);
+    void deleteBook(BookDto bookDto);
 }

@@ -6,7 +6,6 @@ import com.library.api.services.WebSocketNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,20 +15,27 @@ import java.util.Optional;
 @RequestMapping("/api/")
 public class BookController {
     private BookService bookService;
-    private WebSocketNotificationService webSocketNotificationService;
+//    private WebSocketNotificationService webSocketNotificationService;
 
+
+//    @Autowired
+//    public BookController(BookService bookService, WebSocketNotificationService webSocketNotificationService) {
+//        this.bookService = bookService;
+//        this.webSocketNotificationService = webSocketNotificationService;
+//    }
 
     @Autowired
-    public BookController(BookService bookService, WebSocketNotificationService webSocketNotificationService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
-        this.webSocketNotificationService = webSocketNotificationService;
     }
 
     @PostMapping("/author/{authorId}/book")
     public ResponseEntity<BookDto> createBook(@PathVariable(value = "authorId") int authorId,
                                               @RequestBody BookDto bookDto) {
-        BookDto createdBookDto = bookService.createBook(authorId, bookDto);
-        webSocketNotificationService.notify(createdBookDto, "/topic/book/notifications");
+        bookDto.setAuthor_id(Optional.of(authorId));
+        BookDto createdBookDto = bookService.createBook(bookDto);
+        createdBookDto.setAuthor_id(bookDto.getAuthor_id());
+//        webSocketNotificationService.notify(createdBookDto, "/topic/book/notifications");
         return new ResponseEntity<>(createdBookDto, HttpStatus.CREATED);
     }
 
@@ -49,17 +55,21 @@ public class BookController {
     public ResponseEntity<BookDto> updateBook(@PathVariable(value = "authorId") int authorId,
                                               @PathVariable(value = "id") int bookId,
                                               @RequestBody BookDto bookDto) {
-        BookDto updatedBook = bookService.updateBook(authorId, bookId, bookDto);
-        webSocketNotificationService.notify(updatedBook, "/topic/book/notifications");
+        bookDto.setId(bookId);
+        bookDto.setAuthor_id(Optional.of(authorId));
+        BookDto updatedBook = bookService.updateBook(bookDto);
+//        webSocketNotificationService.notify(updatedBook, "/topic/book/notifications");
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
     @DeleteMapping("/author/{authorId}/books/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable(value = "authorId") int authorId,
-                                             @PathVariable(value = "id") int bookId) {
-        bookService.deleteBook(authorId, bookId);
+                                             @PathVariable(value = "id") int bookId,
+                                             BookDto bookDto) {
+        bookDto.setId(bookId);
+        bookDto.setAuthor_id(Optional.of(authorId));
+        bookService.deleteBook(bookDto);
+//        webSocketNotificationService.notify(bookDto, "/topic/book/notifications");
         return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
     }
-
-
 }
