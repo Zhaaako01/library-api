@@ -15,18 +15,13 @@ import java.util.Optional;
 @RequestMapping("/api/")
 public class BookController {
     private BookService bookService;
-//    private WebSocketNotificationService webSocketNotificationService;
+    private WebSocketNotificationService webSocketNotificationService;
 
-
-//    @Autowired
-//    public BookController(BookService bookService, WebSocketNotificationService webSocketNotificationService) {
-//        this.bookService = bookService;
-//        this.webSocketNotificationService = webSocketNotificationService;
-//    }
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, WebSocketNotificationService webSocketNotificationService) {
         this.bookService = bookService;
+        this.webSocketNotificationService = webSocketNotificationService;
     }
 
     @PostMapping("/author/{authorId}/book")
@@ -35,7 +30,7 @@ public class BookController {
         bookDto.setAuthor_id(Optional.of(authorId));
         BookDto createdBookDto = bookService.createBook(bookDto);
         createdBookDto.setAuthor_id(bookDto.getAuthor_id());
-//        webSocketNotificationService.notify(createdBookDto, "/topic/book/notifications");
+        webSocketNotificationService.notify(createdBookDto, "/topic/book/notifications");
         return new ResponseEntity<>(createdBookDto, HttpStatus.CREATED);
     }
 
@@ -58,7 +53,7 @@ public class BookController {
         bookDto.setId(bookId);
         bookDto.setAuthor_id(Optional.of(authorId));
         BookDto updatedBook = bookService.updateBook(bookDto);
-//        webSocketNotificationService.notify(updatedBook, "/topic/book/notifications");
+        webSocketNotificationService.notify(updatedBook, "/topic/book/notifications");
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
@@ -69,7 +64,7 @@ public class BookController {
         bookDto.setId(bookId);
         bookDto.setAuthor_id(Optional.of(authorId));
         bookService.deleteBook(bookDto);
-//        webSocketNotificationService.notify(bookDto, "/topic/book/notifications");
+        webSocketNotificationService.notify(bookDto, "/topic/book/notifications");
         return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
     }
 }

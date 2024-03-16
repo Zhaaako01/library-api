@@ -1,7 +1,6 @@
 package com.library.api.services;
 
 import com.library.api.dto.BookDto;
-import com.library.api.models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

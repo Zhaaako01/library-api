@@ -46,8 +46,6 @@ public class BookServiceImpl implements BookService {
                 new AuthorNotFoundException("Author with associated book not found"));
         book.setAuthor(author);
 
-//        int i = Integer.valueOf(String.valueOf(bookDto.getAuthor_id()));
-//        book.getAuthor().setId(i);
         Book newBook = bookRepository.save(book);
         return mapToDto(newBook);
     }
@@ -144,7 +142,6 @@ public class BookServiceImpl implements BookService {
         bookDto.setTitle(book.getTitle());
         bookDto.setPages(book.getPages());
         bookDto.setAuthor_id(Optional.of(book.getAuthor().getId()));
-//        bookDto.setAuthor_id(Optional.of(book.getAuthor().getId()));
         return bookDto;
     }
 
@@ -153,9 +150,6 @@ public class BookServiceImpl implements BookService {
         book.setId(bookDto.getId());
         book.setTitle(bookDto.getTitle());
         book.setPages(bookDto.getPages());
-//        int i = Integer.valueOf(String.valueOf(bookDto.getAuthor_id()));
-//        int i = bookDto.getAuthor_id().orElseThrow();
-//        book.getAuthor().setId(i);
         return book;
     }
 }
