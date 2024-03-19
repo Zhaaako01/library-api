@@ -67,6 +67,12 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public List<Author> getAuthorAndAllHisBooks(int id){
+        List<Author> authorAndBooks = authorRepository.getAuthorWithHisBooks(id);
+        return authorAndBooks;
+    }
+
+    @Override
     public AuthorDto updateAuthor(AuthorDto authorDto, int id) {
         Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author could not be updated"));
         author.setName(authorDto.getName());

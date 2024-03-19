@@ -58,6 +58,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<BookDto> getAllBooksQUERY() {
+        List<Book> books = bookRepository.getAllBooksFromMySQL();
+        return books.stream().map(book -> mapToDtoQ(book)).collect(Collectors.toList());
+    }
+
+    @Override
+    public BookDto getBookByTitle(String title) {
+        Book book = bookRepository.findBookByTitle(title);
+        return mapToDtoQ(book);
+    }
+
+    @Override
+    public List<BookDto> getAllBooksPagesLessThan(int pages) {
+        List<Book> books = bookRepository.findBookByPagesLessThan(pages);
+        return books.stream().map(book -> mapToDtoQ(book)).collect(Collectors.toList());
+    }
+
+    @Override
     public BookDto getBookById(int authorId, int bookId) {
         Author author = authorRepository.findById(authorId).orElseThrow(() ->
                 new AuthorNotFoundException("Author with associated book not found"));
@@ -130,7 +148,7 @@ public class BookServiceImpl implements BookService {
 //    }
 
     @Override
-    public void deleteBook(BookDto bookDto){
+    public void deleteBook(BookDto bookDto) {
         Book book = bookRepository.findById(bookDto.getId()).orElseThrow(() ->
                 new BookNotFoundException("Book with associated author not found"));
         bookRepository.delete(book);
@@ -142,6 +160,14 @@ public class BookServiceImpl implements BookService {
         bookDto.setTitle(book.getTitle());
         bookDto.setPages(book.getPages());
         bookDto.setAuthor_id(Optional.of(book.getAuthor().getId()));
+        return bookDto;
+    }
+
+    private BookDto mapToDtoQ(Book book) {
+        BookDto bookDto = new BookDto();
+        bookDto.setId(book.getId());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setPages(book.getPages());
         return bookDto;
     }
 

@@ -2,6 +2,7 @@ package com.library.api.controllers;
 
 import com.library.api.dto.AuthorDto;
 import com.library.api.dto.AuthorResponse;
+import com.library.api.models.Author;
 import com.library.api.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,13 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> getAuthorById(@PathVariable int id) {
         return ResponseEntity.ok(authorService.getAuthorById(id));
     }
+
+
+    @GetMapping("authorSql/{id}")
+    public ResponseEntity<List<Author>> getAuthorAndAllHisBooksById(@PathVariable int id) {
+        return new ResponseEntity<>(authorService.getAuthorAndAllHisBooks(id), HttpStatus.OK);
+    }
+
 
     @PostMapping("author/create")
     @ResponseStatus(HttpStatus.CREATED)

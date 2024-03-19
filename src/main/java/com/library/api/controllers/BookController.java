@@ -1,6 +1,7 @@
 package com.library.api.controllers;
 
 import com.library.api.dto.BookDto;
+import com.library.api.models.Book;
 import com.library.api.services.BookService;
 import com.library.api.services.WebSocketNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,29 @@ public class BookController {
     public ResponseEntity<List<BookDto>> getBookByAuthorId(@PathVariable(value = "authorId") int authorId) {
         return new ResponseEntity<>(bookService.getBookByAuthorId(authorId), HttpStatus.OK);
     }
+
+    //  -----          QUERY          -----
+
+
+    @GetMapping("/books_sql")
+    public ResponseEntity<List<BookDto>> getAllBooksSQL() {
+        return new ResponseEntity<>(bookService.getAllBooksQUERY(), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/books_sql/{bookTitle}")
+    public ResponseEntity<BookDto> getBooksByTitleSQL(@PathVariable(value = "bookTitle") String bookTitle) {
+        return new ResponseEntity<>(bookService.getBookByTitle(bookTitle), HttpStatus.OK);
+    }
+
+    @GetMapping("/books/sql/{pages}")
+    public ResponseEntity<List<BookDto>> getAllBooksPagesLessThan(@PathVariable(value = "pages") int pages) {
+        return new ResponseEntity<>(bookService.getAllBooksPagesLessThan(pages), HttpStatus.OK);
+    }
+
+
+    //  -----          QUERY          -----
+
 
     @GetMapping("/author/{authorId}/books/{id}")
     public ResponseEntity<BookDto> getBookById(@PathVariable(value = "authorId") int authorId,
