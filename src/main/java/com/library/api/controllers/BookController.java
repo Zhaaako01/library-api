@@ -41,7 +41,7 @@ public class BookController {
     }
 
     //  -----          QUERY          -----
-
+    // I did not make it REST, I just checked Custom SQL Queries in work
 
     @GetMapping("/books_sql")
     public ResponseEntity<List<BookDto>> getAllBooksSQL() {
