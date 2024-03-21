@@ -34,8 +34,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests()
-//                .requestMatchers(HttpMethod.GET, "api/author/**").permitAll()
-                .requestMatchers(HttpMethod.GET).authenticated()
+                .requestMatchers("api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "api/author/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic(Customizer.withDefaults());
