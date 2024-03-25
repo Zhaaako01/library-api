@@ -1,9 +1,9 @@
-package com.library.api.dto;
-
-import lombok.Data;
-
-@Data
-public class LoginDto {
-    private String username;
-    private String password;
-}
+//package com.library.api.dto;
+//
+//import lombok.Data;
+//
+//@Data
+//public class LoginDto {
+//    private String username;
+//    private String password;
+//}
