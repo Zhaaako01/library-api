@@ -1,6 +1,6 @@
 package com.library.api.controllers;
 
-import com.library.api.dto.AuthResponseDTO;
+import com.library.api.dto.AuthenticationRespDTO;
 import com.library.api.dto.LoginDto;
 import com.library.api.dto.RegisterDto;
 import com.library.api.models.Role;
@@ -45,14 +45,14 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<AuthenticationRespDTO> login(@RequestBody LoginDto loginDto) {
         // there has to be validation and verification, I think
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(),
                         loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthenticationRespDTO(token), HttpStatus.OK);
     }
 
     @PostMapping("register")
