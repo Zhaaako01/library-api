@@ -1,17 +1,38 @@
 package com.library.api.controllers;
 
-import com.library.api.repository.RoleRepository;
-import com.library.api.repository.UserRepository;
-import com.library.api.security.JWTUtils;
+import com.library.api.dto.AuthResReqDTO;
+//import com.library.api.repository.RoleRepository;
+import com.library.api.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/auth")
-public class AuthController {
+public class AuthenticationController {
+
+    @Autowired
+    private AuthenticationService authService;
+
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResReqDTO> signUp(@RequestBody AuthResReqDTO signUpRequest) {
+        return ResponseEntity.ok(authService.signUp(signUpRequest));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResReqDTO> signIn(@RequestBody AuthResReqDTO signInRequest) {
+        return ResponseEntity.ok(authService.signIn(signInRequest));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthResReqDTO> refreshToken(@RequestBody AuthResReqDTO refreshTokenRequest) {
+        return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest));
+    }
+
 
 
 //    @PostMapping("login")

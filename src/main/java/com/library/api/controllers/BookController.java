@@ -25,7 +25,7 @@ public class BookController {
         this.webSocketNotificationService = webSocketNotificationService;
     }
 
-    @PostMapping("/author/{authorId}/book")
+    @PostMapping("/admin/author/{authorId}/book")
     public ResponseEntity<BookDto> createBook(@PathVariable(value = "authorId") int authorId,
                                               @RequestBody BookDto bookDto) {
         bookDto.setAuthor_id(Optional.of(authorId));
@@ -35,7 +35,7 @@ public class BookController {
         return new ResponseEntity<>(createdBookDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/author/{authorId}/books")
+    @GetMapping("/public/author/{authorId}/books")
     public ResponseEntity<List<BookDto>> getBookByAuthorId(@PathVariable(value = "authorId") int authorId) {
         return new ResponseEntity<>(bookService.getBookByAuthorId(authorId), HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class BookController {
         return new ResponseEntity<>(bookDto, HttpStatus.OK);
     }
 
-    @PutMapping("/author/{authorId}/books/{id}")
+    @PutMapping("/admin/author/{authorId}/books/{id}")
     public ResponseEntity<BookDto> updateBook(@PathVariable(value = "authorId") int authorId,
                                               @PathVariable(value = "id") int bookId,
                                               @RequestBody BookDto bookDto) {
@@ -81,7 +81,7 @@ public class BookController {
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
-    @DeleteMapping("/author/{authorId}/books/{id}")
+    @DeleteMapping("/admin/author/{authorId}/books/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable(value = "authorId") int authorId,
                                              @PathVariable(value = "id") int bookId,
                                              BookDto bookDto) {
