@@ -82,8 +82,7 @@ public class AuthenticationService {
             response.setRefreshToken(refreshTokenRequest.getAccessToken());
             response.setExpirationTime("15min");
             response.setMessage("Successfully Refreshed Token");
-        }
-        response.setStatusCode(500);
+        }else response.setStatusCode(500);
         return response;
     }
 }

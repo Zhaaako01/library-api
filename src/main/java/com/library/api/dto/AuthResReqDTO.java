@@ -2,6 +2,7 @@ package com.library.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.library.api.models.Role;
 import com.library.api.models.UserEntity;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class AuthResReqDTO {
     private String refreshToken;
     private String expirationTime;
     private String username;
-    private String role;
+    private Role role;
     private String password;
     private UserEntity User;
 }

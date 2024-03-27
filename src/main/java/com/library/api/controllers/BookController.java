@@ -7,13 +7,15 @@ import com.library.api.services.WebSocketNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/lib")
+//@PreAuthorize("hasRole('ADMIN')")
 public class BookController {
     private BookService bookService;
     private WebSocketNotificationService webSocketNotificationService;
@@ -26,6 +28,7 @@ public class BookController {
     }
 
     @PostMapping("/admin/author/{authorId}/book")
+//    @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<BookDto> createBook(@PathVariable(value = "authorId") int authorId,
                                               @RequestBody BookDto bookDto) {
         bookDto.setAuthor_id(Optional.of(authorId));
@@ -35,7 +38,7 @@ public class BookController {
         return new ResponseEntity<>(createdBookDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/public/author/{authorId}/books")
+    @GetMapping("public/author/{authorId}/books")
     public ResponseEntity<List<BookDto>> getBookByAuthorId(@PathVariable(value = "authorId") int authorId) {
         return new ResponseEntity<>(bookService.getBookByAuthorId(authorId), HttpStatus.OK);
     }
@@ -63,14 +66,14 @@ public class BookController {
     //  -----          QUERY          -----
 
 
-    @GetMapping("/author/{authorId}/books/{id}")
+    @GetMapping("public/author/{authorId}/books/{id}")
     public ResponseEntity<BookDto> getBookById(@PathVariable(value = "authorId") int authorId,
                                                @PathVariable(value = "id") int bookId) {
         BookDto bookDto = bookService.getBookById(authorId, bookId);
         return new ResponseEntity<>(bookDto, HttpStatus.OK);
     }
 
-    @PutMapping("/admin/author/{authorId}/books/{id}")
+    @PutMapping("admin/author/{authorId}/books/{id}")
     public ResponseEntity<BookDto> updateBook(@PathVariable(value = "authorId") int authorId,
                                               @PathVariable(value = "id") int bookId,
                                               @RequestBody BookDto bookDto) {
@@ -81,7 +84,7 @@ public class BookController {
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
-    @DeleteMapping("/admin/author/{authorId}/books/{id}")
+    @DeleteMapping("admin/author/{authorId}/books/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable(value = "authorId") int authorId,
                                              @PathVariable(value = "id") int bookId,
                                              BookDto bookDto) {

@@ -1,8 +1,10 @@
 package com.library.api.security;
 
+import com.library.api.models.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +18,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.library.api.models.Permission.*;
+import static com.library.api.models.Role.ADMIN;
+import static com.library.api.models.Role.USER;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
@@ -36,18 +44,31 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**", "/api/public/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/user/**").hasAnyAuthority("USER")
-                        .requestMatchers("/admin-user/**").hasAnyAuthority("USER", "ADMIN")
-                        .anyRequest().authenticated())
+        return httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers("/api/auth/*" , "/api/lib/public/**")
+                                .permitAll()
+                                .requestMatchers("/api/lib/**").hasAnyRole(ADMIN.name(), USER.name())
+                                .requestMatchers(GET, "/api/lib/**").hasAnyAuthority(ADMIN_READ.name(), USER_READ.name())
+                                .requestMatchers(POST, "/api/lib/**").hasAnyAuthority(ADMIN_CREATE.name(), USER_CREATE.name())
+                                .anyRequest()
+                                .authenticated())
+//                .httpBasic(Customizer.withDefaults())
+//                .cors(Customizer.withDefaults())
+//                .authorizeHttpRequests(request -> {
+//                    request.requestMatchers("/api/auth/**", "/api/public/**").permitAll();
+////                    request.requestMatchers(HttpMethod.POST, "/api/admin/author/{authorId}/book").hasAnyAuthority("ADMIN");
+//                    request.requestMatchers(HttpMethod.POST, "/api/admin/**").hasAnyAuthority(ADMIN_CREATE.name());
+////                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+////                        .requestMatchers("/user/**").hasAnyAuthority("USER")
+////                        .requestMatchers("/admin-user/**").hasAnyAuthority("USER", "ADMIN")
+//                    request.anyRequest().authenticated();})
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-                );
-        return httpSecurity.build();
+                )
+                .build();
     }
 
 
