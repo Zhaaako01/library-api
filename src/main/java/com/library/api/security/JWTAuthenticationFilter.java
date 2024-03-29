@@ -27,7 +27,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = getJWTFromRequest(request);
-        if (StringUtils.hasText(token) && tokenGenerator.isTokenExpired(token)) {
+        if (StringUtils.hasText(token) && !tokenGenerator.isTokenExpired(token)) {
             String username = tokenGenerator.extractUsername(token);
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);

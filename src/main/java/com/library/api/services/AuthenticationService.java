@@ -35,7 +35,7 @@ public class AuthenticationService {
             reqUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             reqUser.setRole(registrationRequest.getRole());
             UserEntity newUser = userRepository.save(reqUser);
-            if (newUser != null && newUser.getId() > 0) {
+            if (newUser != null) {
                 response.setUser(newUser);
                 response.setMessage("User saved Successfully");
                 response.setStatusCode(200);
@@ -64,8 +64,9 @@ public class AuthenticationService {
             response.setExpirationTime("15min");
             response.setMessage("Successfully Signed In");
         }catch (Exception e){
-            response.setStatusCode(500);
+            response.setStatusCode(401);
             response.setError(e.getMessage());
+//            throw e;
         }
         return response;
     }

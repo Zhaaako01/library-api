@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lib")
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 public class BookController {
     private BookService bookService;
     private WebSocketNotificationService webSocketNotificationService;
@@ -28,7 +28,7 @@ public class BookController {
     }
 
     @PostMapping("/admin/author/{authorId}/book")
-//    @PreAuthorize("hasAuthority('admin:create')")
+    @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<BookDto> createBook(@PathVariable(value = "authorId") int authorId,
                                               @RequestBody BookDto bookDto) {
         bookDto.setAuthor_id(Optional.of(authorId));
