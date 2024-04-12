@@ -1,7 +1,6 @@
 package com.library.api.controllers;
 
 import com.library.api.dto.BookDto;
-import com.library.api.models.Book;
 import com.library.api.services.BookService;
 import com.library.api.services.WebSocketNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +62,7 @@ public class BookController {
     }
 
 
-    //  -----          QUERY          -----
+    //  -----          QUERY ENDS         -----
 
 
     @GetMapping("public/author/{authorId}/books/{id}")

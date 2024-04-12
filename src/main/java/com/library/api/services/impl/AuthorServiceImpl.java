@@ -46,7 +46,7 @@ public class AuthorServiceImpl implements AuthorService {
         Page<Author> authors = authorRepository.findAll(pageable);
         List<Author> listOfAuthors = authors.getContent();
 
-                                                         //map because it returns a new list
+        //map because it returns a new list
         List<AuthorDto> content = listOfAuthors.stream().map(auth -> mapToDto(auth)).collect(Collectors.toList());
         AuthorResponse authorResponse = new AuthorResponse();
         authorResponse.setContent(content);
@@ -67,7 +67,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> getAuthorAndAllHisBooks(int id){
+    public List<Author> getAuthorAndAllHisBooks(int id) {
         List<Author> authorAndBooks = authorRepository.getAuthorWithHisBooks(id);
         return authorAndBooks;
     }

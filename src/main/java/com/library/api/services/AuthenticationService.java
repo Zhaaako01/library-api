@@ -48,14 +48,14 @@ public class AuthenticationService {
     }
 
 
-    public AuthResReqDTO signIn(AuthResReqDTO signInRequest){
+    public AuthResReqDTO signIn(AuthResReqDTO signInRequest) {
         AuthResReqDTO response = new AuthResReqDTO();
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(),
-                                                signInRequest.getPassword()));
+                    signInRequest.getPassword()));
             var user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow();
-            System.out.println("USER IS: "+ user);
+            System.out.println("USER IS: " + user);
             var accessToken = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             response.setStatusCode(200);
@@ -63,16 +63,15 @@ public class AuthenticationService {
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("15min");
             response.setMessage("Successfully Signed In");
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setStatusCode(401);
             response.setError(e.getMessage());
-//            throw e;
         }
         return response;
     }
 
 
-    public AuthResReqDTO refreshToken(AuthResReqDTO refreshTokenRequest){
+    public AuthResReqDTO refreshToken(AuthResReqDTO refreshTokenRequest) {
         AuthResReqDTO response = new AuthResReqDTO();
         String username = jwtUtils.extractUsername(refreshTokenRequest.getAccessToken());
         UserEntity user = userRepository.findByUsername(username).orElseThrow();
@@ -83,7 +82,7 @@ public class AuthenticationService {
             response.setRefreshToken(refreshTokenRequest.getAccessToken());
             response.setExpirationTime("15min");
             response.setMessage("Successfully Refreshed Token");
-        }else response.setStatusCode(500);
+        } else response.setStatusCode(500);
         return response;
     }
 }

@@ -16,7 +16,7 @@ public class WebSocketNotificationService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void notify(@Payload BookDto bookDto, String destination){
+    public void notify(@Payload BookDto bookDto, String destination) {
         messagingTemplate.convertAndSend(destination, bookDto);
     }
 }
